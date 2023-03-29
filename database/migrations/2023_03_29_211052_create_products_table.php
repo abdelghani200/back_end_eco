@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('price');
             $table->integer('stock');
             $table->integer('code_bare');
+            $table->integer('discount');
             $table->integer('old_price');
             $table->timestamps();
         });
