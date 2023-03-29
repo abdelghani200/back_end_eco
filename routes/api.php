@@ -1,8 +1,10 @@
 <?php
 
-use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\API\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,3 +32,13 @@ Route::controller(UserController::class)->group(function(){
 
 
 // ->middleware('auth:api')
+
+
+
+Route::apiResource('/products', ProductController::class);
+
+Route::group(['prefix'=>'products'],function(){
+
+    Route::apiResource('/{product}/reviews', ReviewController::class);
+
+});
