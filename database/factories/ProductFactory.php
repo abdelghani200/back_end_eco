@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Categorie;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,6 +20,10 @@ class ProductFactory extends Factory
         $faker = \Faker\Factory::create();
 
         return [
+            // 'categorie_id' => $faker->numberBetween(1,10),
+            'category_id' => function () {
+                return Categorie::all()->random();
+            },
             'name' => $faker->word,
             'description' => $faker->paragraph,
             'price' => $faker->numberBetween(100,1000),
