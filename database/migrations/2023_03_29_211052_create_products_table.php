@@ -20,6 +20,8 @@ return new class extends Migration
             $table->integer('code_bare');
             $table->integer('discount');
             $table->integer('old_price');
+            $table->unsignedBigInteger('category_id');
+            $table->foreign('category_id')->references('id')->on('categories');
             $table->timestamps();
         });
     }
