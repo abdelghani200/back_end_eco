@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\CategorieController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,5 +41,15 @@ Route::apiResource('/products', ProductController::class);
 Route::group(['prefix'=>'products'],function(){
 
     Route::apiResource('/{product}/reviews', ReviewController::class);
+
+});
+
+
+
+Route::apiResource('/categories',CategorieController::class);
+
+Route::group(['prefix'=>'categories'],function(){
+
+    Route::apiResource('/{categorie}/products', ProductController::class);
 
 });
