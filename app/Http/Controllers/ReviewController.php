@@ -65,16 +65,20 @@ class ReviewController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateReviewRequest $request, Review $review)
+    public function update(Request $request, Review $review)
     {
-        //
+        $review->update($request->all());
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Review $review)
+    public function destroy(Product $product, Review $review)
     {
-        //
+
+        $review->delete();
+
+        return response(null,Response::HTTP_NO_CONTENT);
+
     }
 }
