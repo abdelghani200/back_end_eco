@@ -21,10 +21,11 @@ class ProductFactory extends Factory
 
         return [
             // 'categorie_id' => $faker->numberBetween(1,10),
-            'category_id' => function () {
+            'categorie_id' => function () {
                 return Categorie::all()->random();
             },
             'name' => $faker->word,
+            'image' =>  $faker->image('public/storage/images/products',640,480, null, false),
             'description' => $faker->paragraph,
             'price' => $faker->numberBetween(100,1000),
             'stock'=> $faker->randomDigit,
