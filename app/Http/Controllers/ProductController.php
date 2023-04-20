@@ -6,6 +6,8 @@ use Validator;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use App\Http\Requests\ProductRequest;
 use App\Http\Resources\Product\ProductResource;
 use App\Http\Resources\Product\ProductCollection;
@@ -13,17 +15,17 @@ use App\Http\Resources\Product\ProductCollection;
 class ProductController extends Controller
 {
 
-    // public function __construct()
-    // {
-    //     $this->middleware('auth:api')->except('index', 'show');
-    // }
+    public function __construct()
+    {
+        $this->middleware('auth:api')->except('index', 'show', 'destroy', 'update', 'store', 'searchProducts', 'recherche');
+    }
 
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-       return ProductCollection::collection(Product::paginate(20));
+        return ProductCollection::collection(Product::paginate(20));
     }
 
     /**
@@ -41,7 +43,9 @@ class ProductController extends Controller
     {
         $product = new Product;
         $product->name = $request->name;
+        $product->image = $request->image;
         $product->description = $request->description;
+        $product->categorie_id = $request->categorie_id;
         $product->stock = $request->stock;
         $product->price = $request->price;
         $product->old_price = $request->old_price;
@@ -49,8 +53,9 @@ class ProductController extends Controller
         $product->discount = $request->discount;
         $product->save();
         return response([
-            'data' => new ProductResource($product)
-        ],Response::HTTP_CREATED);
+            'data' => new ProductResource($product),
+            'message' => 'Product Created'
+        ], Response::HTTP_CREATED);
     }
 
     /**
@@ -74,17 +79,57 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+
         $product->update($request->all());
     }
+
+    public function searchProducts(Request $request)
+    {
+
+        $name = $request->input('name');
+        $price = $request->input('price');
+        // dd($price);
+        $query = Product::query();
+
+        if ($name) {
+            $query->where('name', 'like', '%' . $name . '%');
+        }
+
+        if ($price) {
+
+            $query->where('price', 'like', '%' . $price . '%');
+        }
+
+        $products = $query->get();
+        dd($products);
+        if (!$products->count()) {
+            return response()->json(['message' => 'No search results']);
+        }
+        return response()->json(['products' => $products, 'error' => false]);
+    }
+
+
+    public function recherche($name, $prix = null)
+    {
+        $query = Product::where("name", "like", "%" . $name . "%");
+        if ($prix != null) {
+            $query->orWhere("prix", $prix);
+        }
+        $resultats = $query->get();
+        return response()->json($resultats);
+    }
+
+
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Product $product)
     {
+        // dd($product);
         $product->delete();
 
-        return response(null,Response::HTTP_NO_CONTENT);
-        
+        return response(null, Response::HTTP_NO_CONTENT);
     }
 }
