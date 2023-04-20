@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Product;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductResource extends JsonResource
@@ -14,8 +15,14 @@ class ProductResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+
+        $category = DB::table('categories')->where('id', $this->categorie_id)->first();
+
         return [
             'name' => $this->name,
+            'image' => $this->image,
+            'category' => optional($category)->name,
+            'category_id' => optional($category)->id,
             'description' => $this->description,
             'price' => $this->price,
             'stock' => $this->stock == 0 ? 'Out of stock' : $this->stock,
